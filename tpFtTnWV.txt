@@ -1,0 +1,129 @@
+--// UI Setup
+local ScreenGui = Instance.new("ScreenGui")
+local MainFrame = Instance.new("Frame")
+local UICorner = Instance.new("UICorner")
+local ProfileImage = Instance.new("ImageLabel")
+local PlayerName = Instance.new("TextLabel")
+local DuplicateButton = Instance.new("TextButton")
+local DeleteButton = Instance.new("TextButton")
+local UndeleteButton = Instance.new("TextButton")
+local CloseButton = Instance.new("TextButton")
+local UIScale = Instance.new("UIScale")
+local player = game.Players.LocalPlayer
+local lastDeletedTool = nil
+
+ScreenGui.Parent = game.CoreGui
+ScreenGui.Name = "GrowGardenDupeUI"
+
+--// Main Frame
+MainFrame.Parent = ScreenGui
+MainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+MainFrame.BackgroundTransparency = 0.3
+MainFrame.Position = UDim2.new(0.3, 0, 0.3, 0)
+MainFrame.Size = UDim2.new(0, 220, 0, 160)
+MainFrame.Active = true
+MainFrame.Draggable = true
+
+UICorner.Parent = MainFrame
+UICorner.CornerRadius = UDim.new(0, 20)
+
+--// Profile Image
+ProfileImage.Parent = MainFrame
+ProfileImage.BackgroundTransparency = 1
+ProfileImage.Size = UDim2.new(0, 40, 0, 40)
+ProfileImage.Position = UDim2.new(0, 10, 0, 10)
+ProfileImage.Image = "rbxthumb://type=AvatarHeadShot&id="..player.UserId.."&w=420&h=420"
+
+--// Player Name
+PlayerName.Parent = MainFrame
+PlayerName.BackgroundTransparency = 1
+PlayerName.Position = UDim2.new(0, 60, 0, 15)
+PlayerName.Size = UDim2.new(0, 150, 0, 20)
+PlayerName.Text = player.DisplayName
+PlayerName.TextColor3 = Color3.fromRGB(255, 255, 255)
+PlayerName.TextScaled = true
+PlayerName.Font = Enum.Font.GothamBold
+
+--// Duplicate Button
+DuplicateButton.Parent = MainFrame
+DuplicateButton.BackgroundColor3 = Color3.fromRGB(60, 220, 100)
+DuplicateButton.Position = UDim2.new(0.5, -70, 0, 60)
+DuplicateButton.Size = UDim2.new(0, 140, 0, 25)
+DuplicateButton.Text = "Duplicate"
+DuplicateButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+DuplicateButton.TextScaled = true
+DuplicateButton.Font = Enum.Font.GothamBold
+Instance.new("UICorner", DuplicateButton).CornerRadius = UDim.new(0, 12)
+
+--// Delete Button
+DeleteButton.Parent = MainFrame
+DeleteButton.BackgroundColor3 = Color3.fromRGB(220, 80, 60)
+DeleteButton.Position = UDim2.new(0.5, -70, 0, 95)
+DeleteButton.Size = UDim2.new(0, 140, 0, 25)
+DeleteButton.Text = "Delete item"
+DeleteButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+DeleteButton.TextScaled = true
+DeleteButton.Font = Enum.Font.GothamBold
+Instance.new("UICorner", DeleteButton).CornerRadius = UDim.new(0, 12)
+
+--// Undelete Button
+UndeleteButton.Parent = MainFrame
+UndeleteButton.BackgroundColor3 = Color3.fromRGB(80, 140, 240)
+UndeleteButton.Position = UDim2.new(0.5, -70, 0, 130)
+UndeleteButton.Size = UDim2.new(0, 140, 0, 25)
+UndeleteButton.Text = "Undelete"
+UndeleteButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+UndeleteButton.TextScaled = true
+UndeleteButton.Font = Enum.Font.GothamBold
+Instance.new("UICorner", UndeleteButton).CornerRadius = UDim.new(0, 12)
+
+--// Close Button
+CloseButton.Parent = MainFrame
+CloseButton.BackgroundColor3 = Color3.fromRGB(220, 60, 60)
+CloseButton.Position = UDim2.new(1, -40, 0, 5)
+CloseButton.Size = UDim2.new(0, 30, 0, 30)
+CloseButton.Text = "X"
+CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseButton.TextScaled = true
+CloseButton.Font = Enum.Font.GothamBold
+Instance.new("UICorner", CloseButton).CornerRadius = UDim.new(0, 12)
+
+--// Duplicate Function
+DuplicateButton.MouseButton1Click:Connect(function()
+	local tool = player.Character:FindFirstChildOfClass("Tool")
+	if tool then
+		local clone = tool:Clone()
+		clone.Parent = player.Backpack
+	else
+		warn("ต้องถือของก่อนนะ")
+	end
+end)
+
+--// Delete Function
+DeleteButton.MouseButton1Click:Connect(function()
+	local tool = player.Character:FindFirstChildOfClass("Tool")
+	if tool then
+		lastDeletedTool = tool:Clone()
+		tool:Destroy()
+	else
+		warn("ไม่มีของถืออยู่")
+	end
+end)
+
+--// Undelete Function
+UndeleteButton.MouseButton1Click:Connect(function()
+	if lastDeletedTool then
+		lastDeletedTool.Parent = player.Backpack
+		lastDeletedTool = nil
+	else
+		warn("ยังไม่ได้ลบอะไร")
+	end
+end)
+
+--// Close UI
+CloseButton.MouseButton1Click:Connect(function()
+	ScreenGui:Destroy()
+end)
+
+UIScale.Parent = MainFrame
+UIScale.Scale = 1
